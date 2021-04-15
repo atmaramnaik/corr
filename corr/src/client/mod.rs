@@ -5,7 +5,7 @@ use corr_lib::core::proto::{Input, Output};
 use async_trait::async_trait;
 pub struct CliDriver;
 use flate2::read::GzDecoder;
-use std::fs::File;
+use std::fs::{File, create_dir_all};
 use tar::Archive;
 use std::path::Path;
 use corr_lib::journey::{Journey, Executable};
@@ -62,6 +62,7 @@ fn unpack(target:String) -> Result<String, std::io::Error> {
     let tar_gz = File::open(target)?;
     let tar = GzDecoder::new(tar_gz);
     let mut archive = Archive::new(tar);
+    create_dir_all("./target");
     let jp = format!("./target/{}",name.unwrap().to_str().unwrap());
     archive.unpack(jp.clone())?;
     Ok(jp)
